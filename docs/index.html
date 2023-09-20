@@ -1,1 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenere Cipher Implementation</title>
+	<style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            background-color: #CBD0D8;
+            margin: 0;
+            padding: 0;
+			overflow: hidden; /* Prevents scrolling */
+            height: 100vh; /* Ensures full viewport height */
+        }
 
+        /* Top Horizontal Strip */
+        #topStrip {
+            background-color: #333D51;
+            height: 250px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 120px;
+        }
+
+        #topStrip img {
+            height: 250px;  /* You can adjust based on your preference */
+            margin-right: 20px;
+        }
+
+        #siteTitle {
+            color: white;
+            font-size: 130px;  /* Adjust size as needed */
+        }
+
+        /* Left Vertical Strip */
+        #leftStrip {
+            background-color: #D3AC2B;
+            width: 50%;  /* Adjust width as needed */
+            height: 100vh;
+            position: absolute;
+            bottom: 0;
+            left: -20%;  /* Adjust based on the angle you desire */
+            transform: skewX(15deg);  /* Angle of the strip */
+            z-index: -1;
+        }
+
+		/* Main Content Area */
+		#mainContent {
+			margin-left: 35%;  /* Adjusted based on the width of the vertical strip + 10% as desired */
+			padding: 30px;
+			min-height: 8vh;
+			z-index: 0;
+		}
+
+        /* Styles for Inputs and Textareas */
+        input, textarea {
+            background-color: #F4F3EA;
+            color: black;
+            border: 1px solid #333D51;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        label {
+            color: white;
+        }
+		
+		/* Encryption/Decryption Buttons */
+		.btn-group {
+			margin-left: 10%; /* Move buttons 10% to the right */
+		}
+
+		.btn-group button {
+			padding: 12px 30px;
+			border-radius: 5px;
+			background-color: #D3D3D3; /* Default color: Light Gray */
+			color: #333D51; /* Default text color */
+			font-size: 18px;
+			transition: transform 0.2s, background-color 0.2s; /* Added transition for color change */
+		}
+
+		.btn-group button:hover {
+			transform: scale(1.05);
+		}
+
+		.btn-group button.active {
+			background-color: #333D51; /* Active color: Blue-ish */
+			color: #F4F3EA; /* Active text color: Off-White */
+		}
+
+		/* Input Fields and Labels */
+		label {
+			display: block;
+			margin-bottom: 8px;
+			color: #333D51;
+			font-size: 20px;
+		}
+
+		input, textarea {
+			max-width: 400px; /* Setting a max width */
+			width: 100%;
+			padding: 10px 15px;
+			border-radius: 5px;
+			border: 2px solid #333D51;
+			font-size: 16px;
+			margin-bottom: 20px;
+			background-color: #F4F3EA;
+		}
+
+		input::placeholder, textarea::placeholder {
+			color: #aaa;
+		}
+
+		/* Execute Button */
+		button {
+			padding: 12px 30px;
+			border-radius: 5px;
+			background-color: #333D51; /* Blue-ish color */
+			color: #F4F3EA; /* Off-White text color */
+			font-size: 20px;
+			cursor: pointer;
+			border: none;
+			transition: transform 0.2s; /* Slight scaling on hover */
+		}
+
+		button:hover {
+			transform: scale(1.05);
+		}
+
+		#vigenereTable {
+			position: absolute;
+			bottom: 9%;
+			right: 13%;
+		}
+
+		#vigenereTable td {
+			width: 30px;
+			height: 30px;
+			text-align: center;
+			font-size: 1.3em;
+			transition: transform 0.5s, background-color 0.5s;
+		}
+
+		.redPop {
+			background-color: #F4F3EA;
+			animation: pop 1s forwards;
+			z-index: 2;
+		}
+
+		.greenPop {
+			background-color: #F4F3EA;
+			animation: pop 1s forwards;
+			z-index: 2;
+		}
+
+		.bluePop {
+			background-color: #D3AC2B;
+			animation: pop 1s forwards;
+			z-index: 2;
+		}
+
+		.slide {
+			display: inline-block;
+			transition: opacity 1s;
+			margin: 0 2px;
+			font-size: 1.5em;
+		}
+
+		#outputAnimation {
+			left: 46%; 
+			position: absolute;
+			bottom: 6%;  // Adjust as needed to ensure it's positioned below the table
+		}
+
+		@keyframes pop {
+			0% { transform: scale(1); }
+			50% { transform: scale(2.0); }
+			100% { transform: scale(1); }
+		}
+
+		@keyframes slideDown {
+			0% { top: initial; left: initial; }
+			100% { top: calc(100% + 20px); left: 0; }
+		}
+		
+		.inputContainer {
+			margin-left: 10%;
+		}
+	</style>
+</head>
+<body>
+
+<!-- Top Strip with Image and Title -->
+<div id="topStrip">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Vigenere.png" alt="Vigenere Cipher">
+    <span id="siteTitle">The Vigenère Cypher</span>
+</div>
+
+<!-- Left Vertical Strip -->
+<div id="leftStrip"></div>
+
+<!-- Main Content Area -->
+<div id="mainContent">
+    <!-- ... [Rest of your HTML code] ... -->
+</div>
+
+<div class="btn-group">
+    <button onclick="setMode('encrypt')" id="encryptBtn">Encryption</button>
+    <button onclick="setMode('decrypt')" id="decryptBtn">Decryption</button>
+</div>
+
+<div class="inputContainer">
+    <br><br>
+
+    <label for="keyword">Keyword:</label>
+    <input type="text" id="keyword">
+
+    <br><br>
+
+    <label for="text">Text:</label>
+    <textarea id="text" rows="4" cols="50"></textarea>
+
+    <br><br>
+
+    <button onclick="performCipher()">Execute</button>
+
+    <br><br>
+
+    <label for="output">Output:</label>
+    <textarea id="output" rows="4" cols="50" readonly></textarea>
+</div>
+
+<div id="vigenereTable">
+    <table border="1">
+        <tbody>
+            <!-- Filled dynamically with JavaScript -->
+        </tbody>
+    </table>
+</div>
+
+<div id="outputAnimation" style="position: absolute; bottom: 4%; right: 25%;">
+    <!-- Filled dynamically with JavaScript for the animation -->
+</div>
+
+<script>
+    let mode = "encrypt"; // default mode
+	let animationTimeouts = [];
+
+    function setMode(newMode) {
+        mode = newMode;
+
+        if (mode === 'encrypt') {
+            document.getElementById('encryptBtn').classList.add('active');
+            document.getElementById('decryptBtn').classList.remove('active');
+        } else {
+            document.getElementById('decryptBtn').classList.add('active');
+            document.getElementById('encryptBtn').classList.remove('active');
+        }
+    }
+
+	function performCipher() {
+		const keyword = document.getElementById('keyword').value;
+		const text = document.getElementById('text').value;
+
+		if (!/^[A-Z]+$/.test(keyword) || !/^[A-Z]+$/.test(text)) {
+			alert("Please use only capital English letters!");
+			return;
+		}
+
+		let result = "";
+		if (mode === 'encrypt') {
+			result = vigenereEncrypt(text, keyword);
+		} else {
+			result = vigenereDecrypt(text, keyword);
+		}
+		document.getElementById('output').value = result;
+
+		// If there's an ongoing animation, clear it
+		for (let timeout of animationTimeouts) {
+			clearTimeout(timeout);
+		}
+		animationTimeouts = []; // Reset the list of active timeouts
+		document.getElementById("outputAnimation").innerHTML = "";
+		
+		animateVigenere();
+	}
+
+    function vigenereEncrypt(plainText, keyword) {
+        let encryptedText = '';
+        let keywordRepeated = '';
+
+        for (let i = 0; i < plainText.length; i++) {
+            keywordRepeated += keyword[i % keyword.length];
+        }
+
+        for (let i = 0; i < plainText.length; i++) {
+            let p = plainText.charCodeAt(i);
+            let k = keywordRepeated.charCodeAt(i) - 65;
+            
+            if (p >= 65 && p <= 90) {
+                encryptedText += String.fromCharCode((p - 65 + k) % 26 + 65);
+            } else if (p >= 97 && p <= 122) {
+                encryptedText += String.fromCharCode((p - 97 + k) % 26 + 97);
+            } else {
+                encryptedText += plainText[i];
+            }
+        }
+        
+        return encryptedText;
+    }
+
+    function vigenereDecrypt(cipherText, keyword) {
+        let decryptedText = '';
+        let keywordRepeated = '';
+
+        for (let i = 0; i < cipherText.length; i++) {
+            keywordRepeated += keyword[i % keyword.length];
+        }
+
+        for (let i = 0; i < cipherText.length; i++) {
+            let c = cipherText.charCodeAt(i);
+            let k = keywordRepeated.charCodeAt(i) - 65;
+            
+            if (c >= 65 && c <= 90) {
+                decryptedText += String.fromCharCode((c - 65 - k + 26) % 26 + 65);
+            } else if (c >= 97 && c <= 122) {
+                decryptedText += String.fromCharCode((c - 97 - k + 26) % 26 + 97);
+            } else {
+                decryptedText += cipherText[i];
+            }
+        }
+        
+        return decryptedText;
+    }
+
+	function animateVigenere() {
+		const keyword = document.getElementById('keyword').value;
+		const text = mode === 'encrypt' ? document.getElementById('text').value : document.getElementById('text').value;
+		let result = mode === 'encrypt' ? vigenereEncrypt(text, keyword) : vigenereDecrypt(text, keyword);
+
+		// Clear the outputAnimation container
+		document.getElementById("outputAnimation").innerHTML = "";
+
+		for (let i = 0; i < text.length; i++) {
+			let timeout = setTimeout(() => { 
+				let rowChar, colChar, targetChar;
+
+				if (mode === 'encrypt') {
+					rowChar = text[i];
+					colChar = keyword[i % keyword.length];
+					targetChar = result[i];
+				} else { // decryption
+					targetChar = text[i];
+					colChar = keyword[i % keyword.length];
+					// Calculate the original plaintext character using the Vigenère decryption method
+					let diff = targetChar.charCodeAt(0) - colChar.charCodeAt(0);
+					if (diff < 0) diff += 26;
+					rowChar = String.fromCharCode(65 + diff);
+				}
+
+				let rowIndex = rowChar.charCodeAt(0) - 65;
+				let colIndex = colChar.charCodeAt(0) - 65;
+				let targetIndex = targetChar.charCodeAt(0) - 65;
+
+				let rowCell = document.querySelector(`[data-row="0"][data-col="${colIndex}"]`);
+				let colCell = document.querySelector(`[data-row="${rowIndex}"][data-col="0"]`);
+				let targetCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+
+				if (mode === 'encrypt') {
+					rowCell.classList.add("greenPop");
+					colCell.classList.add("redPop");
+					targetCell.classList.add("bluePop");
+				} else { // decryption
+					rowCell.classList.add("greenPop");
+					colCell.classList.add("bluePop");
+					targetCell.classList.add("redPop");
+				}
+
+				setTimeout(() => {
+					rowCell.classList.remove("bluePop", "greenPop");
+					colCell.classList.remove("redPop", "bluePop");
+					targetCell.classList.remove("greenPop", "redPop","bluePop");
+
+					let outputLetter = document.createElement("span");
+					outputLetter.textContent = result[i];
+					outputLetter.className = "slide";
+					outputLetter.style.opacity = "0";
+
+					document.getElementById("outputAnimation").appendChild(outputLetter);
+					setTimeout(() => {
+						outputLetter.style.opacity = "1";
+					}, 100);
+				}, 1000);
+			}, i * 2000);
+			
+			animationTimeouts.push(timeout);
+		}
+	}
+
+    function generateVigenereTable() {
+        const tableBody = document.querySelector("#vigenereTable tbody");
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        for (let i = 0; i < 26; i++) {
+            let row = document.createElement("tr");
+
+            for (let j = 0; j < 26; j++) {
+                let cell = document.createElement("td");
+                cell.textContent = alphabet[(i + j) % 26];
+                cell.setAttribute("data-row", i);
+                cell.setAttribute("data-col", j);
+                row.appendChild(cell);
+            }
+
+            tableBody.appendChild(row);
+        }
+    }
+
+    generateVigenereTable();
+
+    // Setting the default active button
+    setMode('encrypt');
+</script>
+
+</body>
+</html>
