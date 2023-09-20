@@ -64,6 +64,7 @@
             padding: 10px;
             font-size: 16px;
             font-weight: bold;
+			resize: none;
         }
 
         label {
@@ -191,6 +192,21 @@
 		.inputContainer {
 			margin-left: 10%;
 		}
+		
+		.grayOut {
+			background-color: #5A5A5A; /* A shade of gray */
+		}
+		
+		#stopBtnContainer {
+			position: absolute;
+			right: 6%;  /* Adjust based on your design */
+			bottom: 9%;  /* Adjust to position it right next to the bottom corner of the table */
+		}
+
+		#stopBtn {
+			background-color: #953553; /* Reddish color for the stop button */
+			color: white; /* White text color */
+		}
 	</style>
 </head>
 <body>
@@ -212,6 +228,10 @@
 <div class="btn-group">
     <button onclick="setMode('encrypt')" id="encryptBtn">Encryption</button>
     <button onclick="setMode('decrypt')" id="decryptBtn">Decryption</button>
+</div>
+
+<div id="stopBtnContainer">
+    <button onclick="stopVisualization()" id="stopBtn">Stop Visual</button>
 </div>
 
 <div class="inputContainer">
@@ -357,7 +377,6 @@
 				} else { // decryption
 					targetChar = text[i];
 					colChar = keyword[i % keyword.length];
-					// Calculate the original plaintext character using the Vigenère decryption method
 					let diff = targetChar.charCodeAt(0) - colChar.charCodeAt(0);
 					if (diff < 0) diff += 26;
 					rowChar = String.fromCharCode(65 + diff);
@@ -367,39 +386,108 @@
 				let colIndex = colChar.charCodeAt(0) - 65;
 				let targetIndex = targetChar.charCodeAt(0) - 65;
 
+				let allCells = document.querySelectorAll("#vigenereTable td");
+				allCells.forEach(cell => cell.classList.add("grayOut"));
+
 				let rowCell = document.querySelector(`[data-row="0"][data-col="${colIndex}"]`);
 				let colCell = document.querySelector(`[data-row="${rowIndex}"][data-col="0"]`);
 				let targetCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
 
 				if (mode === 'encrypt') {
+					// Encryption Visualization
 					rowCell.classList.add("greenPop");
+					rowCell.classList.remove("grayOut");
+					
 					colCell.classList.add("redPop");
-					targetCell.classList.add("bluePop");
-				} else { // decryption
-					rowCell.classList.add("greenPop");
-					colCell.classList.add("bluePop");
-					targetCell.classList.add("redPop");
+					colCell.classList.remove("grayOut");
+					
+					setTimeout(() => {
+						for (let j = 1; j <= colIndex; j++) {
+							document.querySelector(`[data-row="${rowIndex}"][data-col="${j}"]`).classList.remove("grayOut");
+						}
+						for (let j = 1; j <= rowIndex; j++) {
+							document.querySelector(`[data-row="${j}"][data-col="${colIndex}"]`).classList.remove("grayOut");
+						}
+
+						setTimeout(() => {
+							targetCell.classList.add("bluePop");
+							targetCell.classList.remove("grayOut");
+
+							setTimeout(() => {
+								allCells.forEach(cell => cell.classList.remove("grayOut"));
+								rowCell.classList.remove("greenPop");
+								colCell.classList.remove("redPop");
+								targetCell.classList.remove("bluePop");
+							}, 200);
+						}, 400);
+					},800);
+				} else {
+					// Decryption Visualization
+					let inputCell = document.querySelector(`[data-row="${rowIndex}"][data-col="${colIndex}"]`);
+					
+					rowCell.classList.add("redPop");
+					rowCell.classList.remove("grayOut");
+					
+					inputCell.classList.add("greenPop");
+					inputCell.classList.remove("grayOut");
+					
+					setTimeout(() => {
+						for (let j = 0; j <= rowIndex; j++) {
+							document.querySelector(`[data-row="${j}"][data-col="${colIndex}"]`).classList.remove("grayOut");
+						}
+						setTimeout(() => {
+							for (let j = colIndex; j >= 0; j--) {
+								document.querySelector(`[data-row="${rowIndex}"][data-col="${j}"]`).classList.remove("grayOut");
+							}
+
+							setTimeout(() => {
+								targetCell = document.querySelector(`[data-row="${rowIndex}"][data-col="0"]`);
+								targetCell.classList.add("bluePop");
+								targetCell.classList.remove("grayOut");
+
+								setTimeout(() => {
+									allCells.forEach(cell => cell.classList.remove("grayOut"));
+									rowCell.classList.remove("redPop");
+									inputCell.classList.remove("greenPop");
+									targetCell.classList.remove("bluePop");
+								}, 200);
+							}, 300);
+						}, 400);
+					}, 500);
 				}
 
+				let outputLetter = document.createElement("span");
+				outputLetter.textContent = result[i];
+				outputLetter.className = "slide";
+				outputLetter.style.opacity = "0";
+
+				document.getElementById("outputAnimation").appendChild(outputLetter);
 				setTimeout(() => {
-					rowCell.classList.remove("bluePop", "greenPop");
-					colCell.classList.remove("redPop", "bluePop");
-					targetCell.classList.remove("greenPop", "redPop","bluePop");
-
-					let outputLetter = document.createElement("span");
-					outputLetter.textContent = result[i];
-					outputLetter.className = "slide";
-					outputLetter.style.opacity = "0";
-
-					document.getElementById("outputAnimation").appendChild(outputLetter);
-					setTimeout(() => {
-						outputLetter.style.opacity = "1";
-					}, 100);
-				}, 1000);
+					outputLetter.style.opacity = "1";
+				}, 200);
+				
 			}, i * 2000);
 			
 			animationTimeouts.push(timeout);
 		}
+	}
+	
+	function stopVisualization() {
+		// Clear all timeouts to stop the animation
+		for (let timeout of animationTimeouts) {
+			clearTimeout(timeout);
+		}
+		animationTimeouts = []; // Reset the list of active timeouts
+
+		// Reset the Vigenère table to its original state
+		let allCells = document.querySelectorAll("#vigenereTable td");
+		allCells.forEach(cell => {
+			cell.classList.remove("grayOut", "redPop", "greenPop", "bluePop");
+		});
+
+		// Clear the output animation
+		document.getElementById("outputAnimation").innerHTML = "";
+		document.getElementById('output').value = "";  // Clear the output text
 	}
 
     function generateVigenereTable() {
