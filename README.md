@@ -6,7 +6,7 @@ The [website](https://vaioskn.github.io/Vigenere_Cipher/) is an easy-to-use alte
 
 # Syntax_Bash
 
- **• Encryption: ./vigenere -e -p [TEXT] -k [KEY]**
+ **• Encryption: ./vigenere -e -p [TEXT] -k [KEY]** <br>
  **• Decryption: ./vigenere -d -c [TEXT] -k [KEY]**
 
 # Examples_Bash
