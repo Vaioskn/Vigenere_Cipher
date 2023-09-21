@@ -227,11 +227,11 @@
 			display: block;
 			height: 16%; 
 			width: 3px;
-			background-color: white;  /* Color of the line */
+			background-color: white;
 			position: absolute;
 			left: 13.8%;
 			top: 9%;
-			transform: translateY(-50%);  /* Centers the line vertically */
+			transform: translateY(-50%);
 		}
 
 		/* Hover effect to flip the card */
@@ -258,7 +258,7 @@
 			/* Styles for the back side */
 			background-color: #333D51;
 			color: white;
-			transform: rotateY(180deg); /* Rotate the back side */
+			transform: rotateY(180deg);
 			border-radius: 50% 25%;
 			padding: 10px 20px;
 			overflow: hidden;
@@ -560,19 +560,17 @@
 	}
 	
 	function stopVisualization() {
-		// Clear all timeouts to stop the animation
+		
 		for (let timeout of animationTimeouts) {
 			clearTimeout(timeout);
 		}
-		animationTimeouts = []; // Reset the list of active timeouts
+		animationTimeouts = [];
 
-		// Reset the Vigenère table to its original state
 		let allCells = document.querySelectorAll("#vigenereTable td");
 		allCells.forEach(cell => {
 			cell.classList.remove("grayOut", "redPop", "greenPop", "bluePop");
 		});
 
-		// Clear the output animation
 		document.getElementById("outputAnimation").innerHTML = "";
 	}
 
