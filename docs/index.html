@@ -226,7 +226,7 @@
 			content: "";  /* This is necessary for the pseudo-element to be generated */
 			display: block;
 			height: 16%; 
-			width: 3px;
+			width: 0.1%;
 			background-color: white;
 			position: absolute;
 			left: 13.8%;
@@ -282,18 +282,9 @@
 		/* Styles for mobile and tablet */
 		@media screen and (max-width: 768px) {
 			
-			/* Hide the left strip */
-			#leftStrip {
-				display: none;
-			}
 
 			/* Hide the overlay image */
 			#overlayImage {
-				display: none;
-			}
-
-			/* Hide the input container */
-			.inputContainer {
 				display: none;
 			}
 
@@ -320,13 +311,13 @@
 
 			/* Adjust the site title size for better visibility */
 			#siteTitle {
-				font-size: 24px;
+				font-size: 300%;
 			}
 
 			/* Adjust the flip-card (title image) size */
 			.flip-card {
-				width: 100px;
-				height: 100px;
+				width: 80%;
+				height: 80%;
 			}
 
 			/* Center the encryption/decryption buttons */
