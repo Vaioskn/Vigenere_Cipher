@@ -14,6 +14,7 @@
             padding: 0;
 			overflow: hidden; /* Prevents scrolling */
             height: 100vh; /* Ensures full viewport height */
+
         }
 
         /* Top Horizontal Strip */
@@ -27,30 +28,30 @@
         }
 
         #topStrip img {
-            height: 250px;  /* You can adjust based on your preference */
+            height: 250px; 
             margin-right: 20px;
         }
 
         #siteTitle {
             color: white;
-            font-size: 130px;  /* Adjust size as needed */
+            font-size: 130px;
         }
 
         /* Left Vertical Strip */
         #leftStrip {
             background-color: #D3AC2B;
-            width: 50%;  /* Adjust width as needed */
+            width: 50%; 
             height: 100vh;
             position: absolute;
             bottom: 0;
-            left: -20%;  /* Adjust based on the angle you desire */
-            transform: skewX(15deg);  /* Angle of the strip */
+            left: -20%;
+            transform: skewX(15deg);
             z-index: -1;
         }
 
 		/* Main Content Area */
 		#mainContent {
-			margin-left: 35%;  /* Adjusted based on the width of the vertical strip + 10% as desired */
+			margin-left: 35%;
 			padding: 30px;
 			min-height: 8vh;
 			z-index: 0;
@@ -73,16 +74,16 @@
 		
 		/* Encryption/Decryption Buttons */
 		.btn-group {
-			margin-left: 10%; /* Move buttons 10% to the right */
+			margin-left: 10%;
 		}
 
 		.btn-group button {
 			padding: 12px 30px;
 			border-radius: 5px;
-			background-color: #D3D3D3; /* Default color: Light Gray */
+			background-color: #D3D3D3;
 			color: #333D51; /* Default text color */
 			font-size: 18px;
-			transition: transform 0.2s, background-color 0.2s; /* Added transition for color change */
+			transition: transform 0.2s, background-color 0.2s;
 		}
 
 		.btn-group button:hover {
@@ -103,7 +104,7 @@
 		}
 
 		input, textarea {
-			max-width: 400px; /* Setting a max width */
+			max-width: 400px;
 			width: 100%;
 			padding: 10px 15px;
 			border-radius: 5px;
@@ -126,7 +127,7 @@
 			font-size: 20px;
 			cursor: pointer;
 			border: none;
-			transition: transform 0.2s; /* Slight scaling on hover */
+			transition: transform 0.2s;
 		}
 
 		button:hover {
@@ -175,7 +176,7 @@
 		#outputAnimation {
 			left: 46%; 
 			position: absolute;
-			bottom: 6%;  // Adjust as needed to ensure it's positioned below the table
+			bottom: 6%;
 		}
 
 		@keyframes pop {
@@ -199,8 +200,8 @@
 		
 		#stopBtnContainer {
 			position: absolute;
-			right: 6%;  /* Adjust based on your design */
-			bottom: 9%;  /* Adjust to position it right next to the bottom corner of the table */
+			right: 6%;
+			bottom: 9%;
 		}
 
 		#stopBtn {
@@ -209,28 +210,28 @@
 		}
 		
 		.flip-card {
-			width: 250px; /* or whatever size your image is */
+			width: 250px; 
 			height: 250px;
-			perspective: 1000px; /* Create a 3D effect */
+			perspective: 1000px;
 		}
 
 		.flip-card-inner {
 			width: 100%;
 			height: 100%;
 			transform-style: preserve-3d;
-			transition: transform 0.6s; /* Adjust the time for flip speed */
+			transition: transform 0.6s;
 		}
 		
 		#siteTitle::before {
 			content: "";  /* This is necessary for the pseudo-element to be generated */
 			display: block;
-			height: 16%;  /* Adjust the height as necessary */
-			width: 3px;   /* Adjust the width of the line as desired */
+			height: 16%; 
+			width: 3px;
 			background-color: white;  /* Color of the line */
 			position: absolute;
-			left: 13.8%;  /* Adjust the position to place it correctly between the image and title */
+			left: 13.8%;
 			top: 9%;
-			transform: translateY(-50%);  /* This centers the line vertically */
+			transform: translateY(-50%);  /* Centers the line vertically */
 		}
 
 		/* Hover effect to flip the card */
@@ -242,8 +243,8 @@
 			width: 100%;
 			height: 100%;
 			position: absolute;
-			backface-visibility: hidden; /* Hide the back side */
-			border-radius: 50%; /* Make it circular */
+			backface-visibility: hidden;
+			border-radius: 50%;
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -258,14 +259,26 @@
 			background-color: #333D51;
 			color: white;
 			transform: rotateY(180deg); /* Rotate the back side */
-			border-radius: 50% 25%; /* This makes it an egg shape */
-			padding: 10px 20px; /* Padding to ensure the text stays inside the shape */
-			overflow: hidden; /* This ensures any overflowing content is hidden */
-			box-sizing: border-box; /* This ensures padding doesn't increase the element's size */
-			text-align: center; /* Centers the text horizontally */
+			border-radius: 50% 25%;
+			padding: 10px 20px;
+			overflow: hidden;
+			box-sizing: border-box;
+			text-align: center;
 			font-size: 15px;
 			line-height: 1.8;
 		}
+		
+		#overlayImage {
+			position: absolute;
+			top: 0;                   
+			left: 0;
+			width: 100vw;           
+			height: 100vh;          
+			z-index: 9999;          
+			pointer-events: none;   
+			opacity: 1;             
+		}
+		
 	</style>
 </head>
 <body>
@@ -284,6 +297,8 @@
 	</div>
     <span id="siteTitle">The Vigenère Cypher</span>
 </div>
+
+<img src="https://raw.githubusercontent.com/Vaioskn/Vigenere_Cipher/main/docs/files/Vigenere_OverLay.png" alt="overlay" id="overlayImage" draggable="false">
 
 <!-- Left Vertical Strip -->
 <div id="leftStrip"></div>
@@ -334,6 +349,10 @@
 <div id="outputAnimation" style="position: absolute; bottom: 4%; right: 25%;">
     <!-- Filled dynamically with JavaScript for the animation -->
 </div>
+
+<script>
+    window.scrollBy(-50, 0);  // Scrolls 50 pixels to the left
+</script>
 
 <script>
     let mode = "encrypt"; // default mode
