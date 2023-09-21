@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Vigenere Cipher Implementation</title>
 	<style>
         /* Global Styles */
@@ -20,16 +20,16 @@
         /* Top Horizontal Strip */
         #topStrip {
             background-color: #333D51;
-            height: 250px;
+            height: 19%;
             width: 100%;
             display: flex;
             align-items: center;
-            padding-left: 120px;
+            padding-left: 5%;
         }
 
         #topStrip img {
-            height: 250px; 
-            margin-right: 20px;
+            height: 100%; 
+            margin-right: 2%;
         }
 
         #siteTitle {
@@ -277,6 +277,64 @@
 			z-index: 9999;          
 			pointer-events: none;   
 			opacity: 1;             
+		}
+		
+		/* Styles for mobile and tablet */
+		@media screen and (max-width: 768px) {
+			
+			/* Hide the left strip */
+			#leftStrip {
+				display: none;
+			}
+
+			/* Hide the overlay image */
+			#overlayImage {
+				display: none;
+			}
+
+			/* Hide the input container */
+			.inputContainer {
+				display: none;
+			}
+
+			/* Hide the Vigenere table */
+			#vigenereTable {
+				display: none;
+			}
+
+			/* Hide the output animation */
+			#outputAnimation {
+				display: none;
+			}
+
+			/* Hide the stop visualization button */
+			#stopBtnContainer {
+				display: none;
+			}
+
+			/* Adjust the top strip to center its content */
+			#topStrip {
+				justify-content: center;
+				padding-left: 0;
+			}
+
+			/* Adjust the site title size for better visibility */
+			#siteTitle {
+				font-size: 24px;
+			}
+
+			/* Adjust the flip-card (title image) size */
+			.flip-card {
+				width: 100px;
+				height: 100px;
+			}
+
+			/* Center the encryption/decryption buttons */
+			.btn-group {
+				display: flex;
+				justify-content: center;
+				margin-left: 0;
+			}
 		}
 		
 	</style>
