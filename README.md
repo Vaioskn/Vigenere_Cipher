@@ -19,7 +19,7 @@ The [website](https://vaioskn.github.io/Vigenere_Cipher/) is an easy-to-use alte
 **Wrongful Syntax** <br><br>
 ![2](https://github.com/Vaioskn/Vigenere_Cipher/blob/main/docs/files/wrong_syntax.png)
 
-# Code_Bahs
+# Code_Bash
 
 ```
 #!/bin/bash
